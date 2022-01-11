@@ -92,11 +92,11 @@ Let's talk about some tyk-gateway features before going through [examples](#exam
 # examples:
 Let's go through some examples. This examples do not cover all the various things that the tyk-gateway can do; for a more comprehensive take, see the [tyk documentation](https://tyk.io/docs/)      
 In this examples, we will:     
-1. Create an API
-2. Add authentication to the API.
-3. Add rate-limiting for that API.
-4. Add load balancing.
-5. Add API versioning.
+1. [Create an API.](#1-Create-an-API)
+2. [Add authentication to the API.](#2-Add-authentication-to-the-API)
+3. [Add rate-limiting for that API.](#3-Add-rate-limiting-for-that-API)
+4. [Add load balancing.](#4-Add-load-balancing)
+5. [Add API versioning.](#5-Add-API-versioning)
 
 ### 0. pre-requisite:     
 - We are using tyk running inside docker, see the `docker-compose.yml` file in this repo.   
