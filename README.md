@@ -355,63 +355,67 @@ curl -X PUT \
 # reload the gateway
 curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
 ```
+
+### 4. Add load balancing:
+- Tyk supports native round-robin load-balancing in its proxy.        
+  This means that Tyk will rotate requests through a list of target hosts as requests come in.      
+  See the [documentation](https://tyk.io/docs/planning-for-production/ensure-high-availability/load-balancing/)
+- Let's say we have three upstreams that we would like to load balance our requests to; `example.com`, `httpbin.org/get` & `example.net`.
+- We can do so by sending the command;
+```sh
+curl -v \
+  -H "x-tyk-authorization: changeMe" \
+  -H "Content-Type: application/json" \
+  -X PUT \
+  -d '{
+    "name": "my_first_api",
+    "slug": "my_first_api",
+    "api_id": "my_first_api",
+    "auth": {
+      "auth_header_name": "X-example.com-API-KEY"
+    },
+    "version_data": {
+      "not_versioned": true,
+      "versions": {
+        "Default": {
+          "name": "Default",
+          "use_extended_paths": true
+        }
+      }
+    },
+    "proxy": {
+      "listen_path": "/my_first_api",
+      "target_list": [
+        "http://example.com",
+        "http://httpbin.org/get",
+        "http://example.net"
+      ],
+      "strip_listen_path": true,
+      "enable_load_balancing": true
+    },
+    "active": true
+}' http://localhost:7391/tyk/apis/my_first_api
+```
+- NB:
+     - we are using HTTP PUT(`-X PUT`) instead of HTTP POST(`-X POST`) so as to update the key instead of creating a new one.
+     - the uri we call is `/tyk/apis/<api_id>`
+     - we have replaced `target_url` with `target_list`.
+       Tyk will load balance requests to the members in `target_list`
+- Reload the gateway;
+```sh
+curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
+```
+- Send a number of requests to our api;
+```sh
+for i in {1..5}
+do
+  printf "\n\t calling our API for the $i time.\n"
+  curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
+  sleep 2
+done
+```
+- You will see that some requests are sent to `example.com`, others to `http://httpbin.org/get` and also `example.net`
 ############# 
-    
-
-3. Add rate-limiting
-
-
-
-4. Add caching.
-5. enable load balancing
-    # Tyk supports native round-robin load-balancing in its proxy. This means that Tyk will rotate requests through a list of target hosts as requests come in. 
-    # docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/load-balancing/
-
-    curl -v \
-      -H "x-tyk-authorization: changeMe" \
-      -H "Content-Type: application/json" \
-      -X PUT \
-      -d '{
-        "name": "my_first_api",
-        "slug": "my_first_api",
-        "api_id": "my_first_api",
-        "auth": {
-          "auth_header_name": "X-example.com-API-KEY"
-        },
-        "version_data": {
-          "not_versioned": true,
-          "versions": {
-            "Default": {
-              "name": "Default",
-              "use_extended_paths": true
-            }
-          }
-        },
-        "proxy": {
-          "listen_path": "/my_first_api",
-          "target_list": [
-            "http://httpbin.org/get",
-            "http://example.com",
-            "http://httpbin.org/anything"
-          ],
-          "strip_listen_path": true,
-          "enable_load_balancing": true
-        },
-        "active": true
-    }' http://localhost:7391/tyk/apis/my_first_api
-
-    # NB:
-    # - we are using HTTP PUT(`-X PUT`) instead of HTTP POST(`-X POST`) so as to update the key instead of creating a new one.
-    # - the uri we call is `/tyk/apis/<api_id>`
-    # - we have replaced `target_url` with `target_list`.
-    #   Tyk will load balance requests to the members in `target_list`
-  
-    # reload:
-    curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
-
-    # call our API 
-    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api | less
-
    
 
 6. Add health-checking & uptime tests
