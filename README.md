@@ -111,7 +111,6 @@ In this examples, we will:
 3. Add rate-limiting for that API.
 4. Add load balancing.
 5. Add API versioning.
-6. Add uptime tests.  
 
 ### 0. pre-requisite:     
 - We are using tyk running inside docker, see the `docker-compose.yml` file in this repo.   
@@ -415,140 +414,96 @@ do
 done
 ```
 - You will see that some requests are sent to `example.com`, others to `http://httpbin.org/get` and also `example.net`
-############# 
-   
 
-6. Add health-checking & uptime tests
-   # docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/uptime-tests/
-
-    curl -v \
-        -H "x-tyk-authorization: changeMe" \
-        -H "Content-Type: application/json" \
-        -X PUT \
-        -d '{
-        "name": "my_first_api",
-        "slug": "my_first_api",
+### 5. Add API versioning:
+- See [documentation](https://tyk.io/docs/getting-started/key-concepts/versioning/)
+- We can add versiong to our API by sending the request;
+```sh
+curl -v \
+  -H "x-tyk-authorization: changeMe" \
+  -H "Content-Type: application/json" \
+  -X POST \
+  -d '{
+    "name": "my_first_api",
+    "slug": "my_first_api",
+    "api_id": "my_first_api",
+    "auth": {
+      "auth_header_name": "X-example.com-API-KEY"
+    },
+    "definition": {
+        "location": "header",
+        "key": "x-api-version"
+    },
+    "version_data": {
+      "not_versioned": false,
+      "versions": {
+        "version-1": {
+          "name": "version-1",
+          "use_extended_paths": true
+        }
+      }
+    },
+    "proxy": {
+      "listen_path": "/my_first_api",
+      "target_url": "http://example.com",
+      "strip_listen_path": true
+    },
+    "active": true
+}' http://localhost:7391/tyk/apis
+```
+- NB:      
+     - we have set `version_data.not_versioned` to `false` to enable versioning.
+     - we have set `definition.location` to `header` showing that we expect a HTTP header whose name will be `x-api-version`
+- reload the gateway.
+```sh
+curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
+```
+- If you call the api as per usual;
+```sh
+curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
+```
+- You get the response;
+```sh
+HTTP/1.1 403 Forbidden
+{
+    "error": "Version information not found"
+}
+```
+- If you pass in the correct version http header;
+```sh
+curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" -H "x-api-version: version-1" http://localhost:7391/my_first_api
+```
+- You get the response;
+```sh
+HTTP/1.1 403 Forbidden
+{
+    "error": "Access to this API has been disallowed"
+}
+```
+- This is because, the `X-example.com-API-KEY` we are using does not have access right to this versioned API.
+- We need to update the API key to give it access rights to this version.
+```sh
+curl -X PUT \
+  -H "x-tyk-authorization: changeMe" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "allowance": 1,
+    "rate": 1,
+    "per": 60,
+    "access_rights": {
+      "my_first_api": {
         "api_id": "my_first_api",
-        "auth": {
-            "auth_header_name": "X-example.com-API-KEY"
-        },
-        "version_data": {
-            "not_versioned": true,
-            "versions": {
-            "Default": {
-                "name": "Default",
-                "use_extended_paths": true
-            }
-            }
-        },
-        "uptime_tests": {
-            "check_list": [
-                    {"url": "http://httpbin.org", "method": "GET"},
-                    {"url": "http://example.com", "method": "GET"}
-            ]
-        },
-        "proxy": {
-            "listen_path": "/my_first_api",
-            "check_host_against_uptime_tests": true,
-            "target_list": [
-            "http://httpbin.org/get",
-            "http://example.com",
-            "http://httpbin.org/anything"
-            ],
-            "strip_listen_path": true,
-            "enable_load_balancing": true
-        },
-        "active": true
-      }' http://localhost:7391/tyk/apis/my_first_api
-
-
-    # NB:
-    # - you need to have initially enabled uptime-checking in your `tyk.conf`(in our case it is the file called `my_tyk.conf`)
-    #     see the `uptime_tests` section inside of `my_tyk.conf` 
-    #   see: https://tyk.io/docs/planning-for-production/ensure-high-availability/uptime-tests/#initial-configuration
-
-    # reload:
-    curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
-
-    # call our API 
-    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
-     
-     # If uptime checks failed, calling our api would fail with error: `all hosts are down`
-     # And the tyk gateway will have logs like;
-       level=warning msg="[HOST CHECKER] [HOST DOWN]: http://non-existent-domain-12345.com"
-       level=warning msg="[HOST CHECKER] [HOST DOWN]: http://another-non-existent-domain-12345.com"  
-
-
-7. Add api versioning 
-    docs: https://tyk.io/docs/getting-started/key-concepts/versioning/
-
-    curl -v \
-      -H "x-tyk-authorization: changeMe" \
-      -H "Content-Type: application/json" \
-      -X POST \
-      -d '{
-        "name": "my_first_api",
-        "slug": "my_first_api",
-        "api_id": "my_first_api",
-        "auth": {
-          "auth_header_name": "X-example.com-API-KEY"
-        },
-        "definition": {
-            "location": "header",
-            "key": "x-api-version"
-        },
-        "version_data": {
-          "not_versioned": false,
-          "versions": {
-            "version-1": {
-              "name": "version-1",
-              "use_extended_paths": true
-            }
-          }
-        },
-        "proxy": {
-          "listen_path": "/my_first_api",
-          "target_url": "http://example.com",
-          "strip_listen_path": true
-        },
-        "active": true
-    }' http://localhost:7391/tyk/apis
-
-    # NB:
-    # - we have set `version_data.not_versioned` to `false` to enable versioning.
-    # - we have set `definition.location` to `header` showing that we expect a HTTP header whose name will be `x-api-version`
-
-    # reload:
-    curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
-
-    # call our API 
-    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
-      # the above fails with error: `Version information not found`
-    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" -H "x-api-version: v1" http://localhost:7391/my_first_api
-      # the above fails with error: `This API version does not seem to exist`
-    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" -H "x-api-version: version-1" http://localhost:7391/my_first_api
-      # the above fails with error: `Access to this API has been disallowed`
-    
-    # We need to update the key, to give it access to this versioned api.
-    curl -X PUT \
-          -H "x-tyk-authorization: changeMe" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "allowance": 1,
-            "rate": 1,
-            "per": 60,
-            "access_rights": {
-              "my_first_api": {
-                "api_id": "my_first_api",
-                "api_name": "my_first_api",
-                "versions": ["Default", "version-1"]
-              }
-            }
-          }' http://localhost:7391/tyk/keys/a22dccb024354c3fa608a28fa621436a
-    
-    # reload:
-    curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
-
-    # call our API
-    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" -H "x-api-version: version-1" http://localhost:7391/my_first_api
-      # this succeeds.
+        "api_name": "my_first_api",
+        "versions": ["Default", "version-1"]
+      }
+    }
+  }' http://localhost:7391/tyk/keys/a22dccb024354c3fa608a28fa621436a
+```
+- reload the gateway.
+```sh
+curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
+```
+- Now you can call the api and it will succed.
+```sh
+curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" -H "x-api-version: version-1" http://localhost:7391/my_first_api
+```
