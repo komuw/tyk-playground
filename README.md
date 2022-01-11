@@ -148,62 +148,140 @@ Content-Length: 156
 - see the [documentation](https://tyk.io/docs/getting-started/create-api/)
 - run the command;
 ```sh
-    curl -v \
-      -H "x-tyk-authorization: changeMe" \
-      -H "Content-Type: application/json" \
-      -X POST \
-      -d '{
-        "name": "my_first_api",
-        "slug": "my_first_api",
-        "api_id": "my_first_api",
-        "auth": {
-          "auth_header_name": "X-example.com-API-KEY"
-        },
-        "version_data": {
-          "not_versioned": true,
-          "versions": {
-            "Default": {
-              "name": "Default",
-              "use_extended_paths": true
-            }
-          }
-        },
-        "proxy": {
-          "listen_path": "/my_first_api",
-          "target_url": "http://example.com",
-          "strip_listen_path": true
-        },
-        "active": true
-    }' http://localhost:7391/tyk/apis
+curl -v \
+  -H "x-tyk-authorization: changeMe" \
+  -H "Content-Type: application/json" \
+  -X POST \
+  -d '{
+    "name": "my_first_api",
+    "slug": "my_first_api",
+    "api_id": "my_first_api",
+    "auth": {
+      "auth_header_name": "X-example.com-API-KEY"
+    },
+    "version_data": {
+      "not_versioned": true,
+      "versions": {
+        "Default": {
+          "name": "Default",
+          "use_extended_paths": true
+        }
+      }
+    },
+    "proxy": {
+      "listen_path": "/my_first_api",
+      "target_url": "http://example.com",
+      "strip_listen_path": true
+    },
+    "active": true
+}' http://localhost:7391/tyk/apis
+```
+- If it succeds, you should see a response like;
+```sh
+HTTP/1.1 200 OK
+{
+    "key": "my_first_api",
+    "status": "ok",
+    "action": "added"
+}
+```
+- In the above example;     
+    - We have created an API called `my_first_api`
+    - The upstream application that we are proxying to is `http://example.com`
+    - The uri on the tyk-gateway that we need to call(send requests to) is `/my_first_api`
+    - In order to access that uri, we will have to send a HTTP header called `X-example.com-API-KEY`. What value should we use for that header? We'll find out very soon.
+- NB:    
+    - Do not add a suffix slash to the listen_path. ie do not use `"/my_first_api/"`       
+      This will enable requests to both `http://localhost:7391/my_first_api/` and `http://localhost:7391/my_first_api` to go to `http://example.com`
+    - The value `changeMe` is the same as the `secret` value in `my_tyk.conf`
+- After adding the API, we need to reload the gateway. We can do so by sending the request;
+```sh
+curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
+```
+- If it succeds, you should see a response like;
+```sh
+HTTP/1.1 200 OK
+{
+    "status": "ok",
+    "message": ""
+}
+```
+- You can also check for the list of APIs, using the command;
+```sh
+curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/apis
 ```
 
-    # NB:
-    # - do not add a suffix slash to the listen_path. ie do not use `"/my_first_api/"`
-    #   This will enable requests to both `http://localhost:7391/my_first_api/` and `http://localhost:7391/my_first_api`
-    #   to go to `http://example.com`
+2. Add authentication to the API:
+- In order to be able to access the uri `/my_first_api` which "maps" to the upstream `http://example.com`, we need to pass in the header `X-example.com-API-KEY`.    
+  We thus need to create the value for which we'll pass in that http header.    
+  We'll do so by creating an API Key and give it access right to the API created in step 1(above).
+- run the command;
+```sh
+curl -X POST \
+  -H "x-tyk-authorization: changeMe" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "access_rights": {
+      "my_first_api": {
+        "api_id": "my_first_api",
+        "api_name": "my_first_api",
+        "versions": ["Default"]
+      }
+    }
+  }' http://localhost:7391/tyk/keys/create
+- If it succeds, you should get a response like;
+```sh
+HTTP/1.1 200 OK
+{
+    "key": "a22dccb024354c3fa608a28fa621436a",
+    "status": "ok",
+    "action": "added"
+}
+```
+- Keep note of the value of the `key`(ie `a22dccb024354c3fa608a28fa621436a`) in the response
+- NB:
+    - the `api_id` and `api_name` should match the ones in step 1(above).
+- After adding the Key, we need to reload the gateway. We can do so by sending the request;
+```sh
+curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
+```
+- Now that we have created an access/api key, we are ready to call(send requests to) our API.
+- You can try sending a request like;
+```sh
+curl -vkL http://localhost:7391/my_first_api 
+```
+- But that will return an error like;
+```sh
+HTTP/1.1 401 Unauthorized
+{
+    "error": "Authorization field missing"
+}
+```
+- This is the tyk-gateway doing its job; protecting APIs from unauthorized(unwanted) access.
+- Instead, if you send a command like;
+```sh
+curl -vkL -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
+```
+- You will get a response like;
+```sh
+HTTP/1.1 200 OK
+<!doctype html>
+<html>
+<head>
+    <title>Example Domain</title>
+<div>
+    <h1>Example Domain</h1>
+    <p>This domain is for use in illustrative examples in documents. You may use this
+    domain in literature without prior coordination or asking for permission.</p>
+    <p><a href="https://www.iana.org/domains/example">More information...</a></p>
+</div>
+</body>
+</html>
+```
 
-    # reload:
-    curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
 
-    # check if created:
-    curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/apis
-
-    # We need to now create an access key for the above API.
-    curl -X POST \
-      -H "x-tyk-authorization: changeMe" \
-      -H "Content-Type: application/json" \
-      -d '{
-        "access_rights": {
-          "my_first_api": {
-            "api_id": "my_first_api",
-            "api_name": "my_first_api",
-            "versions": ["Default"]
-          }
-        }
-      }' http://localhost:7391/tyk/keys/create
-
-     # reload:
-     curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
+############# 
+    
 
      # check if key was created
      curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/keys
