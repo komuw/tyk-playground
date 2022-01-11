@@ -1,0 +1,31 @@
+version: '3.3'
+services:
+
+  tyk-gateway:
+    # image: tykio/tyk-gateway:v3.2.2
+    image: tykio/tyk-gateway:v4.0.0-rc19
+    ports:
+      - "8080:8080"
+      - "7391:7391"
+    volumes:
+      - ./my_tyk.conf:/opt/tyk-gateway/tyk.conf
+    networks:
+      - tyk
+
+  tyk-redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - tyk
+
+volumes:
+  redis-data: null
+
+networks:
+  tyk: null
+
+# apt -y update;apt -y install procps psmisc telnet iputils-ping nano curl wget
+# wget https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v2.0/json/petstore.json
