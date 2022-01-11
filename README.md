@@ -117,12 +117,37 @@ In this examples, we will:
 - We are using tyk running inside docker, see the `docker-compose.yml` file in this repo.   
 - The tyk configuration we are going to use is very minimal. see the `my_tyk.conf` file in this repo.   
   To see the full array of options that you can configure tyk gateway with, see; https://tyk.io/docs/tyk-oss-gateway/configuration/      
-- 
+- `git clone git@github.com:komuw/tyk-playground.git` 
+- `cd tyk-playground`
+- `docker-compose up`
+- The gateway should be up and running, to confirm; run;
+- `curl http://localhost:7391/hello` which should output something like;
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Tue, 11 Jan 2022 14:23:31 GMT
+Content-Length: 156
 
-We will:
-1. create an API.
-    docs: https://tyk.io/docs/getting-started/create-api/
+{
+    "status": "pass",
+    "version": "v4.0.0",
+    "description": "Tyk GW",
+    "details": {
+        "redis": {
+            "status": "pass",
+            "componentType": "datastore",
+            "time": "2022-01-11T14:23:28Z"
+        }
+    }
+}
+```
+- NB: the port `7391` is the same port number declared as the `listen_port` value in `my_tyk.conf`
 
+
+1. Create an API:
+- see the [documentation](https://tyk.io/docs/getting-started/create-api/)
+- run the command;
+```sh
     curl -v \
       -H "x-tyk-authorization: changeMe" \
       -H "Content-Type: application/json" \
@@ -150,6 +175,7 @@ We will:
         },
         "active": true
     }' http://localhost:7391/tyk/apis
+```
 
     # NB:
     # - do not add a suffix slash to the listen_path. ie do not use `"/my_first_api/"`
