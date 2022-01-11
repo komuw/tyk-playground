@@ -333,7 +333,28 @@ do
   sleep 2
 done
 ```
+- Let's undo that change so that we can be able to continue with the other examples without rate limit errors. run the command;
+```sh
+# set a rate of 1000 requests per minute
+curl -X PUT \
+  -H "x-tyk-authorization: changeMe" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "allowance": 1000,
+    "rate": 1000,
+    "per": 60,
+    "access_rights": {
+      "my_first_api": {
+        "api_id": "my_first_api",
+        "api_name": "my_first_api",
+        "versions": ["Default"]
+      }
+    }
+  }' http://localhost:7391/tyk/keys/a22dccb024354c3fa608a28fa621436a
 
+# reload the gateway
+curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
+```
 ############# 
     
 
