@@ -202,7 +202,7 @@ curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/apis
 ### 2. Add authentication to the API:
 - In order to be able to access the uri `/my_first_api` which "maps" to the upstream `http://example.com`, we need to pass in the header `X-example.com-API-KEY`.    
   We thus need to create the value for which we'll pass in that http header.    
-  We'll do so by creating an API Key and give it access right to the API created in step 1(above).
+  We'll do so by creating an API Key and give it access right to the API created in the [Create an API](#1-Create-an-API)step (above).
 - run the command;
 ```sh
 curl -X POST \
