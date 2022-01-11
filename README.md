@@ -90,7 +90,7 @@ Let's talk about some tyk-gateway features before going through [examples](#exam
          
 
 # examples:
-Let's go through some examples. This examples do not cover all the various things that the tyk-gateway can do, for a more comprehensive take see the [tyk documentation](https://tyk.io/docs/)      
+Let's go through some examples. This examples do not cover all the various things that the tyk-gateway can do; for a more comprehensive take, see the [tyk documentation](https://tyk.io/docs/)      
 In this examples, we will:     
 1. Create an API
 2. Add authentication to the API.
