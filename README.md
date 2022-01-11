@@ -108,8 +108,8 @@ Let's go through some examples. This examples do not cover all the various thing
 In this examples, we will:     
 1. Create an API
 2. Add authentication to the API.
-3. Enable rate-limiting for that api.
-4. Enable load balancing.
+3. Add rate-limiting for that API.
+4. Add load balancing.
 5. Add API versioning.
 6. Add uptime tests.  
 
@@ -278,66 +278,67 @@ HTTP/1.1 200 OK
 </body>
 </html>
 ```
+- As you can see, even though we sent the request to our gateway(`http://localhost:7391/my_first_api`), the gateway did send the request upstream(`http://example.com`) and we got the expected response.
+- NB:      
+    - The value `a22dccb024354c3fa608a28fa621436a` that we pass into the `X-example.com-API-KEY` http header is the value we got when we created the API key.    
+      If you forget the value, you can always get it back by running the command
+```sh
+curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/keys
+```
 
+### 3. Add rate-limiting for that API:
+- Let's say we want to only allow 1 request per minute(60seconds), we can do so by running the command;
+```sh
+curl -X PUT \
+  -H "x-tyk-authorization: changeMe" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "allowance": 1,
+    "rate": 1,
+    "per": 60,
+    "access_rights": {
+      "my_first_api": {
+        "api_id": "my_first_api",
+        "api_name": "my_first_api",
+        "versions": ["Default"]
+      }
+    }
+  }' http://localhost:7391/tyk/keys/a22dccb024354c3fa608a28fa621436a
+```
+- If it succeds you should get a http status 200 response code.
+- NB:     
+    - we are using HTTP PUT(`-X PUT`) instead of HTTP POST(`-X POST`) so as to update the key instead of creating a new one.
+    - the uri we call is `/tyk/keys/<key_id>`
+    - `allowance` & `rate` should be set to the same value.
+    - in the example above, we are setting a rate limit of 1 request per 60 seconds.
+    - The value `a22dccb024354c3fa608a28fa621436a` that we pass into the `X-example.com-API-KEY` http header is the value we got when we created the API key.    
+      If you forget the value, you can always get it back by running the command
+```sh
+curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/keys
+```
+- After updating the Key, we need to reload the gateway. We can do so by sending the request;
+```sh
+curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
+```
+- Call our api and it should succed;
+```sh
+curl -vkL -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
+```
+- However the following, should fail with error: `Rate limit exceeded`
+```sh
+for i in {1..5}
+do
+  printf "\n\t calling our API for the $i time.\n"
+  curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
+  sleep 2
+done
+```
 
 ############# 
     
 
-     # check if key was created
-     curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/keys
-     # you can also check the attributes of each key.
-     curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/keys/9c63ac7767d6451fafd9c47ec16bc60d
-      # where `9c63ac7767d6451fafd9c47ec16bc60d` is the key_id
-
-    # call our API.
-      # The following rightly fails with error: `Authorization field missing`
-      curl -vkL http://localhost:7391/my_first_api 
-      # The following works. Where, `9c63ac7767d6451fafd9c47ec16bc60d` is the value of the key created in (b) above.
-      # The value of that key(`9c63ac7767d6451fafd9c47ec16bc60d`) can also be got by running the command;
-      # curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/keys
-      curl -vkL -H "X-example.com-API-KEY: 9c63ac7767d6451fafd9c47ec16bc60d" http://localhost:7391/my_first_api
-
-
-2. Add auth to that API.(use bearer token auth)
 3. Add rate-limiting
-    curl -X PUT \
-          -H "x-tyk-authorization: changeMe" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "allowance": 1,
-            "rate": 1,
-            "per": 30,
-            "access_rights": {
-              "my_first_api": {
-                "api_id": "my_first_api",
-                "api_name": "my_first_api",
-                "versions": ["Default"]
-              }
-            }
-          }' http://localhost:7391/tyk/keys/9c63ac7767d6451fafd9c47ec16bc60d
 
-    # NB:
-    # - we are using HTTP PUT(`-X PUT`) instead of HTTP POST(`-X POST`) so as to update the key instead of creating a new one.
-    # - the uri we call is `/tyk/keys/<key_id>`
-    # - `allowance` & `rate` should be set to the same value.
-    # - in the example above, we are setting a rate limit of 1 request per 30 seconds.
-
-     # reload:
-     curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
-
-     # check if key was updated
-     curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/keys/9c63ac7767d6451fafd9c47ec16bc60d | jq | grep -i "allowance" -B 2 -A 2
-
-     # call our API.
-     # The following should succeed.
-     curl -vkL -H "X-example.com-API-KEY: 9c63ac7767d6451fafd9c47ec16bc60d" http://localhost:7391/my_first_api
-     # However the following, should fail with error: `Rate limit exceeded`
-     for i in {1..5}
-     do
-       printf "calling our API for the $i time."
-       curl -H "X-example.com-API-KEY: 9c63ac7767d6451fafd9c47ec16bc60d" http://localhost:7391/my_first_api
-       sleep 2
-     done
 
 
 4. Add caching.
@@ -388,7 +389,7 @@ HTTP/1.1 200 OK
     curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
 
     # call our API 
-    curl -H "X-example.com-API-KEY: 9c63ac7767d6451fafd9c47ec16bc60d" http://localhost:7391/my_first_api | less
+    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api | less
 
    
 
@@ -445,7 +446,7 @@ HTTP/1.1 200 OK
     curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
 
     # call our API 
-    curl -H "X-example.com-API-KEY: 9c63ac7767d6451fafd9c47ec16bc60d" http://localhost:7391/my_first_api
+    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
      
      # If uptime checks failed, calling our api would fail with error: `all hosts are down`
      # And the tyk gateway will have logs like;
@@ -496,11 +497,11 @@ HTTP/1.1 200 OK
     curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
 
     # call our API 
-    curl -H "X-example.com-API-KEY: 9c63ac7767d6451fafd9c47ec16bc60d" http://localhost:7391/my_first_api
+    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
       # the above fails with error: `Version information not found`
-    curl -H "X-example.com-API-KEY: 9c63ac7767d6451fafd9c47ec16bc60d" -H "x-api-version: v1" http://localhost:7391/my_first_api
+    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" -H "x-api-version: v1" http://localhost:7391/my_first_api
       # the above fails with error: `This API version does not seem to exist`
-    curl -H "X-example.com-API-KEY: 9c63ac7767d6451fafd9c47ec16bc60d" -H "x-api-version: version-1" http://localhost:7391/my_first_api
+    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" -H "x-api-version: version-1" http://localhost:7391/my_first_api
       # the above fails with error: `Access to this API has been disallowed`
     
     # We need to update the key, to give it access to this versioned api.
@@ -510,7 +511,7 @@ HTTP/1.1 200 OK
           -d '{
             "allowance": 1,
             "rate": 1,
-            "per": 30,
+            "per": 60,
             "access_rights": {
               "my_first_api": {
                 "api_id": "my_first_api",
@@ -518,11 +519,11 @@ HTTP/1.1 200 OK
                 "versions": ["Default", "version-1"]
               }
             }
-          }' http://localhost:7391/tyk/keys/9c63ac7767d6451fafd9c47ec16bc60d
+          }' http://localhost:7391/tyk/keys/a22dccb024354c3fa608a28fa621436a
     
     # reload:
     curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
 
     # call our API
-    curl -H "X-example.com-API-KEY: 9c63ac7767d6451fafd9c47ec16bc60d" -H "x-api-version: version-1" http://localhost:7391/my_first_api
+    curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" -H "x-api-version: version-1" http://localhost:7391/my_first_api
       # this succeeds.
