@@ -30,76 +30,59 @@ But the [tyk-dashboard](https://tyk.io/docs/tyk-dashboard/) does offer similar f
 Let's talk about some tyk-gateway features before going through [examples](#examples).   
 
 ### features.
-1. Authentication & Authorization
+1. Authentication & Authorization        
    see docs: https://tyk.io/docs/basic-config-and-security/security/authentication-authorization/
-  Tyk supports the following methods of auth & authz;
-    - Basic Authentication
-    - Bearer Tokens
-    - HMAC Signatures
-    - JSON Web Tokens
-    - Multiple Auth
-    - OAuth 2.0
-    - Open (Keyless) - ie, No authentication
-    - OpenID Connect
-    - Using plugins (which can be written in Python, Go, javascript etc)
-    - Physical Key Expiry and Deletion
+  Tyk supports the following methods of auth & authz; (Basic Authentication, Bearer Tokens, HMAC Signatures, JSON Web Tokens, Multiple Auth, OAuth 2.0, Open (Keyless- ie, No authentication), OpenID Connect, Using plugins (which can be written in Python, Go, javascript etc), Physical Key Expiry and Deletion)    
   For example, here's a description of how to enable Basic authentication via the dashboard; https://tyk.io/docs/basic-config-and-security/security/authentication-authorization/basic-auth/        
   I will show an example of using bearer token for authentication in the [examples](#examples) section.
 
-2. Rate-limiting, Throttling etc.
-   see docs: https://tyk.io/docs/basic-config-and-security/control-limit-traffic/
+2. Rate-limiting, Throttling etc.        
+   see docs: https://tyk.io/docs/basic-config-and-security/control-limit-traffic/     
    Here's how you would setup ratelimiting via the dashboard; https://tyk.io/docs/basic-config-and-security/control-limit-traffic/rate-limiting/
 
-3. Caching.
+3. Caching.        
    see docs: https://tyk.io/docs/basic-config-and-security/reduce-latency/caching/
 
-4. Service discovery
+4. Service discovery        
    see docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/service-discovery/
-             https://cs.github.com/TykTechnologies/tyk/blob/ae78504252e2ebf2fd17eb3e6d1ba172efea87e5/swagger.yml?q=use_discovery_service#L2662-L2686
-             https://cs.github.com/TykTechnologies/tyk/blob/ae78504252e2ebf2fd17eb3e6d1ba172efea87e5/config/config.go?q=type+config+struct#L515-L516
 
-5. Circuit breaker.
+5. Circuit breaker.        
    see docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/circuit-breakers/
-             https://cs.github.com/TykTechnologies/tyk/blob/ae78504252e2ebf2fd17eb3e6d1ba172efea87e5/swagger.yml?q=use_discovery_service#L2065-L2086
-             https://cs.github.com/TykTechnologies/tyk/blob/ae78504252e2ebf2fd17eb3e6d1ba172efea87e5/config/config.go?q=type+config+struct#L515-L516
 
-6. Load balancing.
+6. Load balancing.        
    see docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/load-balancing/
 
-7. Health check, liveness & uptime
-   see docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/health-check/
+7. Health check, liveness & uptime.        
+   see docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/health-check/        
              https://tyk.io/docs/planning-for-production/ensure-high-availability/uptime-tests/
 
-8. API versioning.
+8. API versioning.        
    see docs: https://tyk.io/docs/getting-started/key-concepts/versioning/
 
-9. API imports.
-   see docs: https://tyk.io/docs/getting-started/import-apis/
+9. API imports.        
+   see docs: https://tyk.io/docs/getting-started/import-apis/        
    You can import Swagger/OpenAPI json definitions of your APIs to the tyk gateway. 
 
-10. Plugins.
-   see docs: https://tyk.io/docs/plugins/
-   you can use either Go, Python, JS, Lua or GRPC to write your plugins; https://tyk.io/docs/plugins/supported-languages/
-   Those plugins have access to both the request and the response; https://tyk.io/docs/concepts/middleware-execution-order/
-   Here is an example plugin written in python; https://github.com/TykTechnologies/tyk-plugin-demo-python/blob/master/middleware.py
-   
-   Plugins are for advanced uses. Most of the things you want to do in the gateway can be done on the tyk-dashboard without using a plugin.
-   For example, you can add/remove HTTP headers from requests/responses using the tyk-dashboard(no plugins needed), see: https://tyk.io/docs/advanced-configuration/transform-traffic/response-headers/
+10. Plugins.        
+   see docs: https://tyk.io/docs/plugins/        
+   You can use either Go, Python, JS, Lua or GRPC to write your plugins; https://tyk.io/docs/plugins/supported-languages/        
+   Those plugins have access to both the request and the response; https://tyk.io/docs/concepts/middleware-execution-order/        
+   Here is an example plugin written in python; https://github.com/TykTechnologies/tyk-plugin-demo-python/blob/master/middleware.py         
 
-11. Analytics.
+11. Analytics.        
     see docs: https://tyk.io/docs/tyk-dashboard-analytics/
 
-12. Access control.
-    You can use Role Based Access Control(RBAC) or 
-    Tyk also suppors using Open Policy Agent (OPA)
-    see docs: https://tyk.io/docs/tyk-dashboard/rbac/
+12. Access control.        
+    You can use Role Based Access Control(RBAC) or         
+    Tyk also suppors using Open Policy Agent (OPA)        
+    see docs: https://tyk.io/docs/tyk-dashboard/rbac/        
               https://tyk.io/docs/tyk-dashboard/open-policy-agent/
 
-13. Proxy.
+13. Proxy.        
     see docs: https://tyk.io/docs/key-concepts/tcp-proxy/
               https://tyk.io/docs/key-concepts/grpc-proxy/
 
-14. You can also enable HTTP2
+14. You can also enable HTTP2        
       https://tyk.io/docs/tyk-oss-gateway/configuration/#http_server_optionsenable_http2
 
 
