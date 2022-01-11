@@ -249,7 +249,10 @@ HTTP/1.1 401 Unauthorized
 - This is the tyk-gateway doing its job; protecting APIs from unauthorized(unwanted) access.
 - Instead, if you send a command like;
 ```sh
-curl -vkL -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
+curl \
+  -vkL \
+  -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" \
+  http://localhost:7391/my_first_api
 ```
 - You will get a response like;
 ```sh
