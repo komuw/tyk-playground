@@ -85,6 +85,9 @@ Let's talk about some tyk-gateway features before going through [examples](#exam
 14. You can also enable HTTP2        
       https://tyk.io/docs/tyk-oss-gateway/configuration/#http_server_optionsenable_http2
 
+15. Tyk has many more features. Please consult the [documentation](https://tyk.io/docs/)       
+         
+         
 
 # examples:
 Let's go through some examples. This examples do not cover all the various things that the tyk-gateway can do, for a more comprehensive take see the [tyk documentation](https://tyk.io/docs/)      
