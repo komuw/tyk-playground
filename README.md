@@ -314,14 +314,19 @@ curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
 ```
 - Call our api and it should succed;
 ```sh
-curl -vkL -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
+curl \
+  -vkL \
+  -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" \
+  http://localhost:7391/my_first_api
 ```
 - However the following, should fail with error: `Rate limit exceeded`
 ```sh
 for i in {1..5}
 do
   printf "\n\t calling our API for the $i time.\n"
-  curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
+  curl \
+    -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" \
+    http://localhost:7391/my_first_api
   sleep 2
 done
 ```
@@ -402,7 +407,9 @@ curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
 for i in {1..5}
 do
   printf "\n\t calling our API for the $i time.\n"
-  curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
+  curl \
+    -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" \
+    http://localhost:7391/my_first_api
   sleep 2
 done
 ```
@@ -453,7 +460,9 @@ curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
 ```
 - If you call the api as per usual;
 ```sh
-curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" http://localhost:7391/my_first_api
+curl \
+  -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" \
+  http://localhost:7391/my_first_api
 ```
 - You get the response;
 ```sh
@@ -464,7 +473,10 @@ HTTP/1.1 403 Forbidden
 ```
 - If you pass in the correct version http header;
 ```sh
-curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" -H "x-api-version: version-1" http://localhost:7391/my_first_api
+curl \
+  -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" \
+  -H "x-api-version: version-1" \
+  http://localhost:7391/my_first_api
 ```
 - You get the response;
 ```sh
@@ -498,5 +510,8 @@ curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
 ```
 - Now you can call the api and it will succed.
 ```sh
-curl -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" -H "x-api-version: version-1" http://localhost:7391/my_first_api
+curl \
+  -H "X-example.com-API-KEY: a22dccb024354c3fa608a28fa621436a" \
+  -H "x-api-version: version-1" \
+  http://localhost:7391/my_first_api
 ```
