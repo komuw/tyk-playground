@@ -396,8 +396,8 @@ curl -v \
 - NB:
      - we are using HTTP PUT(`-X PUT`) instead of HTTP POST(`-X POST`) so as to update the key instead of creating a new one.
      - the uri we call is `/tyk/apis/<api_id>`
-     - we have replaced `target_url` with `target_list`.
-       Tyk will load balance requests to the members in `target_list`
+     - we have replaced `target_url` with `target_list`.      
+       Tyk will load balance requests to the members in `target_list`          
 - Reload the gateway;
 ```sh
 curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
