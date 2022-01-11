@@ -103,7 +103,7 @@ Let's talk about some tyk-gateway features before going through [examples](#exam
       https://tyk.io/docs/tyk-oss-gateway/configuration/#http_server_optionsenable_http2
 
 
-## examples:
+# examples:
 Let's go through some examples. This examples do not cover all the various things that the tyk-gateway can do, for a more comprehensive take see the [tyk documentation](https://tyk.io/docs/)      
 In this examples, we will:     
 1. Create an API
@@ -113,7 +113,7 @@ In this examples, we will:
 5. Add API versioning.
 6. Add uptime tests.  
 
-0. pre-requisite:     
+### 0. pre-requisite:     
 - We are using tyk running inside docker, see the `docker-compose.yml` file in this repo.   
 - The tyk configuration we are going to use is very minimal. see the `my_tyk.conf` file in this repo.   
   To see the full array of options that you can configure tyk gateway with, see; https://tyk.io/docs/tyk-oss-gateway/configuration/      
@@ -144,7 +144,7 @@ Content-Length: 156
 - NB: the port `7391` is the same port number declared as the `listen_port` value in `my_tyk.conf`
 
 
-1. Create an API:
+### 1. Create an API:
 - see the [documentation](https://tyk.io/docs/getting-started/create-api/)
 - run the command;
 ```sh
@@ -211,7 +211,7 @@ HTTP/1.1 200 OK
 curl -vkL -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/apis
 ```
 
-2. Add authentication to the API:
+### 2. Add authentication to the API:
 - In order to be able to access the uri `/my_first_api` which "maps" to the upstream `http://example.com`, we need to pass in the header `X-example.com-API-KEY`.    
   We thus need to create the value for which we'll pass in that http header.    
   We'll do so by creating an API Key and give it access right to the API created in step 1(above).
