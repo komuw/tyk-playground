@@ -8,7 +8,7 @@ The three plans are:
  2. Cloud         - on the cloud, saves you the hustle of devops.                
 
 The Tyk Developer Portal(documentation: https://tyk.io/docs/tyk-developer-portal/)                  
- - This is a product that is only available to paid users.                  
+ - This is a product that is available to paid users.                  
  - You usually/only need this, if your company is going to give the general public access to           
    your API's for them to build applications.                 
    For example, The Financial Times(https://developer.ft.com/portal) is a company that uses Tyk developer portal.                
@@ -16,7 +16,7 @@ The Tyk Developer Portal(documentation: https://tyk.io/docs/tyk-developer-portal
  - If your APIs are used only by your employees/devs, then you may not need the portal.                        
 
 I'm now going to focus on the open-soure(ie free) Tyk gateway:    
-Here's a page showing an overview of some of the features available in the tyk-gateway: https://tyk.io/docs/apim/open-source/#:~:text=Open%20Source%20API%20Gateway%20Features    
+Here's a [page showing an overview](https://tyk.io/docs/apim/open-source/#:~:text=Open%20Source%20API%20Gateway%20Features) of some of the features available in the tyk-gateway.    
 
 
 You can configure the tyk-gateway(eg, create API's) via either;            
