@@ -1,3 +1,124 @@
+Tyk has some very good documentation available at: https://tyk.io/docs/      
+It also has a very supportive community at: https://community.tyk.io/     
+
+Here's a page showing the differences between the three main Tyk tiers/plans: https://tyk.io/docs/apim/      
+The three plans are:              
+ 1. Open Source   - free                     
+ 2. Self-Managed  - where you pay for support, and optionally pay for addition products like Tyk Developer Portal(discussed futher below)                        
+ 2. Cloud         - on the cloud, saves you the hustle of devops.                
+
+The Tyk Developer Portal(documentation: https://tyk.io/docs/tyk-developer-portal/)                  
+ - This is a product that is only available to paid users.                  
+ - You usually/only need this, if your company is going to give the general public access to           
+   your API's for them to build applications.                 
+   For example, The Financial Times(https://developer.ft.com/portal) is a company that uses Tyk developer portal.                
+   Anyone in the world can go and signup and create applications that use the Financial Times API.                       
+ - If your APIs are used only by your employees/devs, then you may not need the portal.                        
+
+I'm now going to focus on the open-soure(ie free) Tyk gateway:    
+Here's a page showing an overview of some of the features available in the tyk-gateway: https://tyk.io/docs/apim/open-source/#:~:text=Open%20Source%20API%20Gateway%20Features    
+
+
+You can configure the tyk-gateway(eg, create API's) via either;            
+(a) the [tyk-dashboard](https://tyk.io/docs/tyk-dashboard/)                     
+    and/or       
+(b) making API calls to the [tyk-gateway API](https://tyk.io/docs/tyk-gateway-api/)       
+
+In the [examples](#examples) section below, I'm going to use the [tyk-gateway API](https://tyk.io/docs/tyk-gateway-api/) to configure the tyk-gateway.    
+But the [tyk-dashboard](https://tyk.io/docs/tyk-dashboard/) does offer similar functionality in a much nicer interface.    
+
+Let's talk about some tyk-gateway features before going through [examples](#examples).   
+
+### features.
+1. Authentication & Authorization
+   see docs: https://tyk.io/docs/basic-config-and-security/security/authentication-authorization/
+  Tyk supports the following methods of auth & authz;
+    - Basic Authentication
+    - Bearer Tokens
+    - HMAC Signatures
+    - JSON Web Tokens
+    - Multiple Auth
+    - OAuth 2.0
+    - Open (Keyless) - ie, No authentication
+    - OpenID Connect
+    - Using plugins (which can be written in Python, Go, javascript etc)
+    - Physical Key Expiry and Deletion
+  For example, here's a description of how to enable Basic authentication via the dashboard; https://tyk.io/docs/basic-config-and-security/security/authentication-authorization/basic-auth/        
+  I will show an example of using bearer token for authentication in the [examples](#examples) section.
+
+2. Rate-limiting, Throttling etc.
+   see docs: https://tyk.io/docs/basic-config-and-security/control-limit-traffic/
+   Here's how you would setup ratelimiting via the dashboard; https://tyk.io/docs/basic-config-and-security/control-limit-traffic/rate-limiting/
+
+3. Caching.
+   see docs: https://tyk.io/docs/basic-config-and-security/reduce-latency/caching/
+
+4. Service discovery
+   see docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/service-discovery/
+             https://cs.github.com/TykTechnologies/tyk/blob/ae78504252e2ebf2fd17eb3e6d1ba172efea87e5/swagger.yml?q=use_discovery_service#L2662-L2686
+             https://cs.github.com/TykTechnologies/tyk/blob/ae78504252e2ebf2fd17eb3e6d1ba172efea87e5/config/config.go?q=type+config+struct#L515-L516
+
+5. Circuit breaker.
+   see docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/circuit-breakers/
+             https://cs.github.com/TykTechnologies/tyk/blob/ae78504252e2ebf2fd17eb3e6d1ba172efea87e5/swagger.yml?q=use_discovery_service#L2065-L2086
+             https://cs.github.com/TykTechnologies/tyk/blob/ae78504252e2ebf2fd17eb3e6d1ba172efea87e5/config/config.go?q=type+config+struct#L515-L516
+
+6. Load balancing.
+   see docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/load-balancing/
+
+7. Health check, liveness & uptime
+   see docs: https://tyk.io/docs/planning-for-production/ensure-high-availability/health-check/
+             https://tyk.io/docs/planning-for-production/ensure-high-availability/uptime-tests/
+
+8. API versioning.
+   see docs: https://tyk.io/docs/getting-started/key-concepts/versioning/
+
+9. API imports.
+   see docs: https://tyk.io/docs/getting-started/import-apis/
+   You can import Swagger/OpenAPI json definitions of your APIs to the tyk gateway. 
+
+10. Plugins.
+   see docs: https://tyk.io/docs/plugins/
+   you can use either Go, Python, JS, Lua or GRPC to write your plugins; https://tyk.io/docs/plugins/supported-languages/
+   Those plugins have access to both the request and the response; https://tyk.io/docs/concepts/middleware-execution-order/
+   Here is an example plugin written in python; https://github.com/TykTechnologies/tyk-plugin-demo-python/blob/master/middleware.py
+   
+   Plugins are for advanced uses. Most of the things you want to do in the gateway can be done on the tyk-dashboard without using a plugin.
+   For example, you can add/remove HTTP headers from requests/responses using the tyk-dashboard(no plugins needed), see: https://tyk.io/docs/advanced-configuration/transform-traffic/response-headers/
+
+11. Analytics.
+    see docs: https://tyk.io/docs/tyk-dashboard-analytics/
+
+12. Access control.
+    You can use Role Based Access Control(RBAC) or 
+    Tyk also suppors using Open Policy Agent (OPA)
+    see docs: https://tyk.io/docs/tyk-dashboard/rbac/
+              https://tyk.io/docs/tyk-dashboard/open-policy-agent/
+
+13. Proxy.
+    see docs: https://tyk.io/docs/key-concepts/tcp-proxy/
+              https://tyk.io/docs/key-concepts/grpc-proxy/
+
+14. You can also enable HTTP2
+      https://tyk.io/docs/tyk-oss-gateway/configuration/#http_server_optionsenable_http2
+
+
+## examples:
+Let's go through some examples. This examples do not cover all the various things that the tyk-gateway can do, for a more comprehensive take see the [tyk documentation](https://tyk.io/docs/)      
+In this examples, we will:     
+1. Create an API
+2. Add authentication to the API.
+3. Enable rate-limiting for that api.
+4. Enable load balancing.
+5. Add API versioning.
+6. Add uptime tests.  
+
+0. pre-requisite:     
+- We are using tyk running inside docker, see the `docker-compose.yml` file in this repo.   
+- The tyk configuration we are going to use is very minimal. see the `my_tyk.conf` file in this repo.   
+  To see the full array of options that you can configure tyk gateway with, see; https://tyk.io/docs/tyk-oss-gateway/configuration/      
+- 
+
 We will:
 1. create an API.
     docs: https://tyk.io/docs/getting-started/create-api/
