@@ -177,7 +177,7 @@ HTTP/1.1 200 OK
     - We have created an API called `my_first_api`
     - The upstream application that we are proxying to is `http://example.com`
     - The uri on the tyk-gateway that we need to call(send requests to) is `/my_first_api`
-    - In order to access that uri, we will have to send a HTTP header called `X-example.com-API-KEY`. What value should we use for that header? We'll find out very soon.
+    - In order to access that uri, we will have to send a HTTP header called `X-example.com-API-KEY`. What value should we use for that header? We'll find out in [Add authentication to the API](2-Add-authentication-to-the-API) below.
 - NB:    
     - Do not add a suffix slash to the listen_path. ie do not use `"/my_first_api/"`       
       This will enable requests to both `http://localhost:7391/my_first_api/` and `http://localhost:7391/my_first_api` to go to `http://example.com`
