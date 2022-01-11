@@ -485,7 +485,7 @@ HTTP/1.1 403 Forbidden
     "error": "Access to this API has been disallowed"
 }
 ```
-- This is because, the `X-example.com-API-KEY` we are using does not have access right to this versioned API.
+- This is because, the value of the http header(`X-example.com-API-KEY`) we are using does not have access rights to this versioned API. It only has access rights to the `Default` version.    
 - We need to update the API key to give it access rights to this version.
 ```sh
 curl -X PUT \
