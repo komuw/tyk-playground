@@ -515,3 +515,21 @@ curl \
   -H "x-api-version: version-1" \
   http://localhost:7391/my_first_api
 ```
+- Which will produce a response lik;
+```sh
+HTTP/1.1 200 OK
+
+<html>
+<head>
+    <title>Example Domain</title>
+</head>
+<body>
+<div>
+    <h1>Example Domain</h1>
+    <p>This domain is for use in illustrative examples in documents. You may use this
+    domain in literature without prior coordination or asking for permission.</p>
+    <p><a href="https://www.iana.org/domains/example">More information...</a></p>
+</div>
+</body>
+</html>
+```
