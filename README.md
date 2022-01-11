@@ -217,6 +217,7 @@ curl -X POST \
       }
     }
   }' http://localhost:7391/tyk/keys/create
+```
 - If it succeds, you should get a response like;
 ```sh
 HTTP/1.1 200 OK
@@ -226,7 +227,7 @@ HTTP/1.1 200 OK
     "action": "added"
 }
 ```
-- Keep note of the value of the `key`(ie `a22dccb024354c3fa608a28fa621436a`) in the response
+- Keep note of the value of the `key` (ie `a22dccb024354c3fa608a28fa621436a`) in the response
 - NB:
     - the `api_id` and `api_name` should match the ones in step 1(above).
 - After adding the Key, we need to reload the gateway. We can do so by sending the request;
