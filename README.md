@@ -101,11 +101,14 @@ In this examples, we will:
 ### 0. pre-requisite:     
 - We are using tyk running inside docker, see the `docker-compose.yml` file in this repo.   
 - The tyk configuration we are going to use is very minimal. see the `my_tyk.conf` file in this repo.   
-  To see the full array of options that you can configure tyk gateway with, see; https://tyk.io/docs/tyk-oss-gateway/configuration/      
-- `git clone git@github.com:komuw/tyk-playground.git` 
-- `cd tyk-playground`
-- `docker-compose up`
-- The gateway should be up and running, to confirm; run;
+  To see the full array of options that you can configure tyk gateway with, see; https://tyk.io/docs/tyk-oss-gateway/configuration/     
+- run the commands
+```sh   
+git clone git@github.com:komuw/tyk-playground.git
+cd tyk-playground
+docker-compose up
+```
+- The gateway should now be up and running. To confirm, run;
 - `curl http://localhost:7391/hello` which should output something like;
 ```bash
 HTTP/1.1 200 OK
