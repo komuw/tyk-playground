@@ -99,6 +99,7 @@ In this examples, we will:
 3. [Add rate-limiting for that API.](#3-Add-rate-limiting-for-that-API)
 4. [Add load balancing.](#4-Add-load-balancing)
 5. [Add API versioning.](#5-Add-API-versioning)
+6. [Add Uptime checking.](#6-Add-Uptime-checking)
 
 ### 0. pre-requisite:     
 - We are using tyk running inside docker, see the `docker-compose.yml` file in this repo.   
@@ -535,3 +536,57 @@ HTTP/1.1 200 OK
 </body>
 </html>
 ```
+
+
+### 6. Add Uptime checking:
+- See [documentation](https://tyk.io/docs/planning-for-production/ensure-high-availability/uptime-tests/)
+- run the command;
+```sh
+curl -v \
+  -H "x-tyk-authorization: changeMe" \
+  -H "Content-Type: application/json" \
+  -X PUT \
+  -d '{
+    "name": "my_first_api",
+    "slug": "my_first_api",
+    "api_id": "my_first_api",
+    "auth": {
+      "auth_header_name": "X-example.com-API-KEY"
+    },
+    "version_data": {
+      "not_versioned": true,
+      "versions": {
+        "Default": {
+          "name": "Default",
+          "use_extended_paths": true
+        }
+      }
+    },
+    "uptime_tests": {
+        "check_list": [
+          {"url": "http://example.com/", "timeout": 1000000000},
+          {"url": "http://httpbin.org/get", "timeout": 1000000000}
+        ]
+    },
+    "proxy": {
+      "listen_path": "/my_first_api",
+      "check_host_against_uptime_tests": true,
+      "target_list": [
+        "http://example.com",
+        "http://httpbin.org/get",
+        "http://example.net"
+      ],
+      "strip_listen_path": true,
+      "enable_load_balancing": true
+    },
+    "active": true
+}' http://localhost:7391/tyk/apis/my_first_api
+```
+- NB:
+     - we have set a `timeout` of `1000000000 nano seconds`, ie; 1 second.            
+     - the `timeout` is specified in nano seconds and will be the timeout of the  http client doing the uptime checking.    
+- Reload the gateway;
+```sh
+curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
+```
+- The tyk gateway will now carry out regular uptime checks on the specified urls. 
