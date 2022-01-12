@@ -584,7 +584,8 @@ curl -v \
 ```
 - NB:
      - we have set a `timeout` of `1000000000 nano seconds`, ie; 1 second.            
-     - the `timeout` is specified in nano seconds and will be the timeout of the  http client doing the uptime checking.    
+     - the `timeout` is specified in nano seconds and will be the timeout of the  http client doing the uptime checking.        
+     - we have also set `proxy.check_host_against_uptime_tests` to `true`.        
 - Reload the gateway;
 ```sh
 curl -H "x-tyk-authorization: changeMe" http://localhost:7391/tyk/reload/group
