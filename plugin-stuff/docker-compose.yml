@@ -7,6 +7,7 @@ services:
       dockerfile: plugin_compiler_Dockerfile
       args:
         - GITHUB_TAG=${TYK_VERSION}
+        - GO_VERSION=1.19.13 # version used by the plugin compiler tag in use in dockerfile.
     volumes:
       - ./go/src:/plugin-source
     environment:

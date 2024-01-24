@@ -146,6 +146,9 @@ if [[ "$DEBUG" == "1" ]] ; then
 	git diff --cached
 fi
 
+env
+go version
+
 if [[ "$GO_USE_VENDOR" == "1" ]] ; then
   export GOWORK=off # Disable workspace mode. It is not compatible with 'mod=vendor'
   CC=$CC CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH go build -mod=vendor -buildmode=plugin -trimpath -o $plugin_name
