@@ -1,5 +1,5 @@
 
-export TYK_VERSION := v5.2.4
+export TYK_VERSION := v5.2.2
 export OUR_GO_PROXY := /tmp/myGoProxy
 
 # Note the Go version must match the one use in plugin-compiler

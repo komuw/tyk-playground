@@ -3,7 +3,7 @@
 # - https://github.com/TykTechnologies/custom-go-plugin
 
 # docker buildx create --use --name multi-arch-builder
-# docker buildx build --push --platform linux/amd64,linux/arm64 -t komuw/tyk-plugin-compiler:latest .
+# docker buildx build --push --platform linux/amd64 -t komuw/tyk-plugin-compiler:v5.2.2 -f plugin_compiler_Dockerfile --build-arg GITHUB_TAG=v5.2.2 .
 
 # This custom plugin compiler is updated so that building plugins does not require internet access.
 ARG BASE_IMAGE=tykio/golang-cross:1.19-bullseye
