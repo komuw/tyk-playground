@@ -10,6 +10,7 @@ var logger = log.Get()
 
 // AddFooBarHeader adds custom "Foo: Bar" header to the request
 func AddFooBarHeader(rw http.ResponseWriter, r *http.Request) {
+	logger.Info("------ AddFooBarHeader called ------")
 	r.Header.Add("Foo", "Bar")
 }
 
