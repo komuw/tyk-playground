@@ -23,19 +23,19 @@ curl -v \
     "use_keyless": true,
     "custom_middleware": {
 		"pre": [
-           {
-				"name": "AddFooBarHeader",
-				"path": "/opt/tyk-gateway/middleware/CustomGoPlugin.so",
-				"require_session": false
-			}
-        ],
+        {
+          "name": "AddFooBarHeader",
+          "path": "/opt/tyk-gateway/middleware/CustomGoPlugin.so",
+          "require_session": false
+			  }
+      ],
 		"post": [
-			{
-				"name": "AddFooBarHeader",
-				"path": "/opt/tyk-gateway/middleware/CustomGoPlugin.so",
-				"require_session": false
-			}
-		],
+        {
+          "name": "AddFooBarHeader",
+          "path": "/opt/tyk-gateway/middleware/CustomGoPlugin.so",
+          "require_session": false
+        }
+		  ],
 		"driver": "goplugin"
 	},
     "auth": {
