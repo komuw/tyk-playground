@@ -2,8 +2,10 @@
 # - https://github.com/TykTechnologies/tyk/tree/master/ci/images/plugin-compiler
 # - https://github.com/TykTechnologies/custom-go-plugin
 
-# This custom plugin compiler is updated so that building plugins does not require internet access.
+# docker buildx create --use --name multi-arch-builder
+# docker buildx build --push --platform linux/amd64,linux/arm64 -t komuw/tyk-plugin-compiler:latest .
 
+# This custom plugin compiler is updated so that building plugins does not require internet access.
 ARG BASE_IMAGE=tykio/golang-cross:1.19-bullseye
 FROM ${BASE_IMAGE}
 
@@ -13,6 +15,7 @@ ENV GITHUB_SHA ${GITHUB_SHA}
 ENV GITHUB_TAG ${GITHUB_TAG}
 
 LABEL description="Image for plugin development"
+LABEL repo="https://github.com/komuw/tyk-playground"
 
 ENV TYK_GW_PATH=/go/src/github.com/TykTechnologies/tyk
 
