@@ -148,6 +148,11 @@ fi
 
 env
 go version
+{ # try
+    curl -vkL "https://example.com/" && echo "there should no internet, exiting" && exit 77;
+} || { # catch
+	echo "\n\t There is no internet access \n\n"
+}
 
 if [[ "$GO_USE_PROXY" == "1" ]] ; then
   export GOPROXY='file:////tmp/myGoProxy/pkg/mod/cache/download'

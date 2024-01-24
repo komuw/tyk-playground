@@ -2,6 +2,7 @@ version: '3.8'
 services:
 
   tyk-plugin-compiler:
+    network_mode: "none" # Force the plugin compiler to have no internet access.
     build:
       context: .
       dockerfile: plugin_compiler_Dockerfile
