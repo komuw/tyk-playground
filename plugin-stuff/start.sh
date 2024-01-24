@@ -12,7 +12,6 @@ set -x
 curl http://localhost:8080/hello
 
 echo "create api: "
-
 curl -v \
   -H "x-tyk-authorization: changeMe" \
   -H "Content-Type: application/json" \
@@ -21,8 +20,9 @@ curl -v \
     "name": "my_first_api",
     "slug": "my_first_api",
     "api_id": "my_first_api",
+    "use_keyless": true,
     "auth": {
-      "auth_header_name": "X-example.com-API-KEY"
+      "auth_header_name": ""
     },
     "version_data": {
       "not_versioned": true,
@@ -41,3 +41,8 @@ curl -v \
     "active": true
 }' http://localhost:8080/tyk/apis
 
+echo "reload: "
+curl -H "x-tyk-authorization: changeMe" http://localhost:8080/tyk/reload/group
+
+echo "call api: "
+curl -vkL http://localhost:8080/my_first_api

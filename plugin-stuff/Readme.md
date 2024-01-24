@@ -16,4 +16,8 @@ git checkout v5.2.4
 gotv 1.19 build -trimpath -tags=goplugin . # Note the Go version must match the one use in plugin-compiler
 ./tyk plugin load -f /home/komuw/Downloads/cool/go/src/CustomGoPlugin*.so -s MyPluginPre
 ```
+### Usage:
+`make build`
+`bash start.sh`
+
 `gotv` is https://github.com/go101/gotv
