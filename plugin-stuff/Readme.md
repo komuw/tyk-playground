@@ -21,3 +21,6 @@ gotv 1.19 build -trimpath -tags=goplugin . # Note the Go version must match the 
 `bash start.sh`
 
 `gotv` is https://github.com/go101/gotv
+
+This features a custom plugin compiler is updated so that building plugins does not require internet access.
+
