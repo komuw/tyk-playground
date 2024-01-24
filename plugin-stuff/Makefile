@@ -26,7 +26,7 @@ go-build:
 	gotv 1.19.13 mod vendor
 	printf "\n\t machine with NO internet commands\n\n"
 	docker-compose run --rm tyk-plugin-compiler CustomGoPlugin.so
-	mv -f ./go/src/CustomGoPlugin*.so ./tyk/middleware/
+	cp ./go/src/CustomGoPlugin*.so ./tyk/middleware/
 
 up-gateway:
 	docker ps -aq | xargs docker rm -f;docker volume ls -q | xargs docker volume rm -f | echo -n ''
