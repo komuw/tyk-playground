@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+
+  tyk-plugin-compiler:
+    build:
+      context: ./go/src
+      dockerfile: plugin_compiler_Dockerfile
+      args:
+        - GITHUB_TAG=${TYK_VERSION}
+    volumes:
+      - ./go/src:/plugin-source
+
+  tyk-gateway:
+    image: tykio/tyk-gateway:${TYK_VERSION}
+    ports:
+      - "8080:8080" # should match the one in `my_tyk`
+    volumes:
+      - ./tyk/bundle:/opt/tyk-gateway/bundle
+      - ./tyk/middleware:/opt/tyk-gateway/middleware
+      - ./my_tyk.conf:/opt/tyk-gateway/tyk.conf
+    networks:
+      - tyk
+
+  tyk-redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - tyk
+
+volumes:
+  redis-data:
+
+
+networks:
+  tyk:
