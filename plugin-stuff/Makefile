@@ -21,8 +21,9 @@ go-build:
 	mv -f ./go/src/CustomGoPlugin*.so ./tyk/middleware/CustomGoPlugin.so
 
 up-gateway:
+	docker ps -aq | xargs docker rm -f;docker volume ls -q | xargs docker volume rm -f | echo -n ''
 	docker-compose up --detach tyk-gateway tyk-redis
 
 restart-gateway:
-	sleep 3;docker-compose restart tyk-gateway
+	sleep 3;docker-compose restart tyk-gateway;sleep 3
 
