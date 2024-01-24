@@ -149,9 +149,9 @@ fi
 env
 go version
 
-if [[ "$GO_USE_VENDOR" == "1" ]] ; then
-  # Disable workspace mode. It is not compatible with 'mod=vendor'
-  CC=$CC CGO_ENABLED=1 GOOS=$GOOS GOARCH=$GOARCH GOWORK=off go build -mod=vendor -buildmode=plugin -trimpath -o $plugin_name
+if [[ "$GO_USE_PROXY" == "1" ]] ; then
+  export GOPROXY='file:////tmp/myGoProxy/pkg/mod/cache/download'
+  CC=$CC CGO_ENABLED=1 GOOS=$GOOS GOARCH=$GOARCH go build -buildmode=plugin -trimpath -o $plugin_name
 else
   CC=$CC CGO_ENABLED=1 GOOS=$GOOS GOARCH=$GOARCH go build -buildmode=plugin -trimpath -o $plugin_name
 fi
