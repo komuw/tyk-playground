@@ -10,7 +10,7 @@ services:
     volumes:
       - ./go/src:/plugin-source
     environment:
-      - GO_USE_VENDOR=1
+      - GO_USE_VENDOR=1 # So that building plugins does not require internet access.
 
   tyk-gateway:
     image: tykio/tyk-gateway:${TYK_VERSION}
