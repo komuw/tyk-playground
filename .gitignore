@@ -1,0 +1,20 @@
+.vscode/*
+debug
+debug.test
+coverage.txt
+coverage.out
+coverage.html
+.DS_Store
+
+# go-pry debug stuff
+.main.gopry
+
+# goreleaser distribution folder.
+/dist/
+
+plugin-stuff/go/src/vendor
+*/vendor/
+**/CustomGoPlugin.so
+plugin-stuff/go/src/CustomGoPlugin_v5.2.4_linux_amd64.so
+plugin-stuff/tyk/middleware/CustomGoPlugin_v5.2.4_linux_amd64.so
+

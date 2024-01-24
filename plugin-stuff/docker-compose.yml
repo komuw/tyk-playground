@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+
+  tyk-plugin-compiler:
+    network_mode: "none" # Force the plugin compiler to have no internet access.
+    build:
+      context: .
+      dockerfile: plugin_compiler_Dockerfile
+      args:
+        - GITHUB_TAG=${TYK_VERSION}
+        - GO_VERSION=1.19.13 # version used by the plugin compiler tag in use in dockerfile.
+    volumes:
+      - ./go/src:/plugin-source
+      - ${OUR_GO_PROXY}:/tmp/myGoProxy
+    environment:
+      - GO_USE_PROXY=1 # So that building plugins does not require internet access.
+
+  tyk-gateway:
+    image: tykio/tyk-gateway:${TYK_VERSION}
+    ports:
+      - "8080:8080" # should match the one in `my_tyk`
+    volumes:
+      - ./tyk/middleware:/opt/tyk-gateway/middleware
+      - ./my_tyk.conf:/opt/tyk-gateway/tyk.conf
+    networks:
+      - tyk
+
+  tyk-redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - tyk
+
+volumes:
+  redis-data:
+
+
+networks:
+  tyk:
