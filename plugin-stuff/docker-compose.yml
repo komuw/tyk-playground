@@ -18,7 +18,6 @@ services:
     ports:
       - "8080:8080" # should match the one in `my_tyk`
     volumes:
-      - ./tyk/bundle:/opt/tyk-gateway/bundle
       - ./tyk/middleware:/opt/tyk-gateway/middleware
       - ./my_tyk.conf:/opt/tyk-gateway/tyk.conf
     networks:
