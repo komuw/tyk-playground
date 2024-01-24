@@ -42,7 +42,9 @@ curl -v \
 }' http://localhost:8080/tyk/apis
 
 echo "reload: "
+sleep 2
 curl -H "x-tyk-authorization: changeMe" http://localhost:8080/tyk/reload/group
 
 echo "call api: "
+sleep 2
 curl -vkL http://localhost:8080/my_first_api
