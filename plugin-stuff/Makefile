@@ -24,5 +24,5 @@ up-gateway:
 	docker-compose up --detach tyk-gateway tyk-redis
 
 restart-gateway:
-	docker-compose restart tyk-gateway
+	sleep 3;docker-compose restart tyk-gateway
 
