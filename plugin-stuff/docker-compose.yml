@@ -10,7 +10,7 @@ services:
         - GO_VERSION=1.19.13 # version used by the plugin compiler tag in use in dockerfile.
     volumes:
       - ./go/src:/plugin-source
-      - /tmp/myGoProxy:/tmp/myGoProxy
+      - ${OUR_GO_PROXY}:/tmp/myGoProxy
     environment:
       - GO_USE_PROXY=1 # So that building plugins does not require internet access.
 
