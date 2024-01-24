@@ -1,5 +1,5 @@
 # Taken from:
-# -https://github.com/TykTechnologies/tyk/tree/master/ci/images/plugin-compiler
+# - https://github.com/TykTechnologies/tyk/tree/master/ci/images/plugin-compiler
 # - https://github.com/TykTechnologies/custom-go-plugin
 
 ARG BASE_IMAGE=tykio/golang-cross:1.19-bullseye

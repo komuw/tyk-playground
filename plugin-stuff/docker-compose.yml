@@ -3,12 +3,14 @@ services:
 
   tyk-plugin-compiler:
     build:
-      context: ./go/src
+      context: .
       dockerfile: plugin_compiler_Dockerfile
       args:
         - GITHUB_TAG=${TYK_VERSION}
     volumes:
       - ./go/src:/plugin-source
+    environment:
+      - GO_USE_VENDOR=1
 
   tyk-gateway:
     image: tykio/tyk-gateway:${TYK_VERSION}
