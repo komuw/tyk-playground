@@ -12,6 +12,7 @@ set -x
 curl http://localhost:8080/hello
 
 echo "create api: "
+sleep 2
 curl -v \
   -H "x-tyk-authorization: changeMe" \
   -H "Content-Type: application/json" \

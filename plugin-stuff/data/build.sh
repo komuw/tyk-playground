@@ -150,9 +150,8 @@ env
 go version
 
 if [[ "$GO_USE_VENDOR" == "1" ]] ; then
-  export GOWORK=off # Disable workspace mode. It is not compatible with 'mod=vendor'
-  CC=$CC CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH go build -mod=vendor -buildmode=plugin -trimpath -o $plugin_name
-  unset GOWORK
+  # Disable workspace mode. It is not compatible with 'mod=vendor'
+  CC=$CC CGO_ENABLED=1 GOOS=$GOOS GOARCH=$GOARCH GOWORK=off go build -mod=vendor -buildmode=plugin -trimpath -o $plugin_name
 else
   CC=$CC CGO_ENABLED=1 GOOS=$GOOS GOARCH=$GOARCH go build -buildmode=plugin -trimpath -o $plugin_name
 fi
