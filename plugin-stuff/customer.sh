@@ -71,4 +71,4 @@ build_plugin(){
       --volume ${OUR_GO_PROXY}:/tmp/myGoProxy \
       komuw/tyk-plugin-compiler:v5.2.2 CustomGoPlugin.so
 }
-build_plugin
+# build_plugin
