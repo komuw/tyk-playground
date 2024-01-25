@@ -4,12 +4,17 @@ shopt -s nullglob
 set -x
 
 export TYK_VERSION=v5.2.2
-export OUR_GO_PROXY=/tmp/myGoProxy
 export OUR_GO_VERSION=1.19.1
 
 PLUGIN_DIR=${1:-NotSet}
 if [ "$PLUGIN_DIR" == "NotSet"  ]; then
     printf "\n\n PLUGIN_DIR should not be empty\n"
+    exit
+fi
+
+OUR_GO_PROXY=${2:-NotSet}
+if [ "$OUR_GO_PROXY" == "NotSet"  ]; then
+    printf "\n\n OUR_GO_PROXY should not be empty\n"
     exit
 fi
 
@@ -56,6 +61,7 @@ set_plugin_modules(){
 }
 set_plugin_modules
 
+# This should be run in the machine with no internet.
 build_plugin(){
     cd ${PLUGIN_DIR}
     docker \

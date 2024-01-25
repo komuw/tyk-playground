@@ -151,7 +151,7 @@ go version
 
 
 if [[ "$GO_USE_PROXY" == "1" ]] ; then
-	if [[ "$DEBUG" == "1" ]] ; then
+	if [[ "$CHECK_INTERNET" == "1" ]] ; then
 	# Check if there's internet.
 		{ # try
 			curl -vkL "https://example.com/" && echo "there should no internet, exiting" && exit 77;
