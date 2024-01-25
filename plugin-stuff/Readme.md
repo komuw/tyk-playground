@@ -23,4 +23,7 @@ The response from that `curl` command should have a HTTP header `Omar: IsComing`
 ```sh
 docker pull komuw/tyk-plugin-compiler:v5.2.2
 ```
-2. In the machine that has internet, make sure that your Go version is compatible with the one from plugin compiler, ie Go version 1.19
+2. In the machine that has internet, make sure that your Go version is compatible with the one from plugin compiler, ie Go version 1.19. Then run;
+```sh
+bash customer.sh /path/to/directory/with/plugin/code
+```

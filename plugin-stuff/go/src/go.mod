@@ -1,4 +1,4 @@
-module github.com/komuw/exampleplugin
+module github.com/example/plugin
 
 go 1.19
 

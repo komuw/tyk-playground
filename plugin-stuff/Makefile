@@ -39,7 +39,7 @@ tyk_modules:
 # update GOPROXY to have all the required modules for the plugin.
 plugin_modules:
 	cd ./go/src ; \
-	gotv ${OUR_GO_VERSION} mod init github.com/komuw/exampleplugin ; \
+	gotv ${OUR_GO_VERSION} mod init github.com/example/plugin ; \
 	gotv ${OUR_GO_VERSION} get -d github.com/TykTechnologies/tyk@`git ls-remote https://github.com/TykTechnologies/tyk.git refs/tags/${TYK_VERSION} | awk '{print $$1;}'` ; \
 	unset GOPROXY ; \
 	unset GOPATH ; \
