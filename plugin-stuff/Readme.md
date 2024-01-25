@@ -6,7 +6,7 @@ We create a new plugin-compiler docker image in `plugin-stuff/plugin_compiler_Do
 
 This features a custom plugin compiler is updated so that building plugins does not require internet access.            
 
-### Usage:
+#### Usage from this repo:
 Run;
 ```sh
 make build
@@ -18,3 +18,9 @@ curl -vkL http://localhost:8080/my_first_api
 ```
 The response from that `curl` command should have a HTTP header `Omar: IsComing` which is set by `plugin-stuff/go/src/CustomGoPlugin.go`     
 
+#### Usage from a customer perspective
+1. Download the custom plugin compiler in the machine that has no internet.
+```sh
+docker pull komuw/tyk-plugin-compiler:v5.2.2
+```
+2. In the machine that has internet, make sure that your Go version is compatible with the one from plugin compiler, ie Go version 1.19
