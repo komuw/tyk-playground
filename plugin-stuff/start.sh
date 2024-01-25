@@ -65,5 +65,5 @@ curl -H "x-tyk-authorization: changeMe" http://localhost:8080/tyk/reload/group
 
 echo "call api: "
 sleep 2
-curl -vkL http://localhost:8080/my_first_api
+curl -vkI http://localhost:8080/my_first_api
 # The returned response should have a header `Omar: IsComing` which is set by `plugin-stuff/go/src/CustomGoPlugin.go`

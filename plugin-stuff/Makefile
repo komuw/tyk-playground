@@ -1,10 +1,12 @@
 
 export TYK_VERSION := v5.2.2
 export OUR_GO_PROXY := /tmp/myGoProxy
-
 # Note the Go version must match the one use in plugin-compiler
-# `gotv` is https://github.com/go101/gotv
+# Only the major versions need to match.
+export OUR_GO_VERSION := 1.19.1
 
+
+# `gotv` is https://github.com/go101/gotv
 
 # Builds the Go plugin
 build: prep-proxy up-gateway tyk_modules plugin_modules build_plugin restart-gateway
@@ -31,20 +33,20 @@ tyk_modules:
 	unset GOPATH ; \
 	export GOPROXY='https://proxy.golang.org,direct' ; \
 	export GOPATH=${OUR_GO_PROXY} ; \
-	gotv 1.19.13 mod download ; \
-	gotv 1.19.13 mod tidy
+	gotv ${OUR_GO_VERSION} mod download ; \
+	gotv ${OUR_GO_VERSION} mod tidy
 
 # update GOPROXY to have all the required modules for the plugin.
 plugin_modules:
 	cd ./go/src ; \
-	gotv 1.19.13 mod init github.com/komuw/exampleplugin ; \
-	gotv 1.19.13 get -d github.com/TykTechnologies/tyk@`git ls-remote https://github.com/TykTechnologies/tyk.git refs/tags/${TYK_VERSION} | awk '{print $$1;}'` ; \
+	gotv ${OUR_GO_VERSION} mod init github.com/example/plugin ; \
+	gotv ${OUR_GO_VERSION} get -d github.com/TykTechnologies/tyk@`git ls-remote https://github.com/TykTechnologies/tyk.git refs/tags/${TYK_VERSION} | awk '{print $$1;}'` ; \
 	unset GOPROXY ; \
 	unset GOPATH ; \
 	export GOPROXY='https://proxy.golang.org,direct' ; \
 	export GOPATH=${OUR_GO_PROXY} ; \
-	gotv 1.19.13 mod download ; \
-	gotv 1.19.13 mod tidy ; \
+	gotv ${OUR_GO_VERSION} mod download ; \
+	gotv ${OUR_GO_VERSION} mod tidy ; \
 	tree ${OUR_GO_PROXY}/pkg/mod/cache/download ; \
 	unset GOPROXY ; \
 	unset GOPATH
