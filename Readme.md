@@ -5,3 +5,5 @@ The [Tyk youtube channel](https://www.youtube.com/channel/UCe3VG8wgz03u73xiomGeQ
 
 Each high-level directory tries to deal with one thing.
 
+Also see `offline-plugin-build.sh` which "doesn't need golang installed and works for any gateway version".
+
