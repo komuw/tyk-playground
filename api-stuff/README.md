@@ -139,6 +139,7 @@ Content-Length: 156
 - see the [documentation](https://tyk.io/docs/getting-started/create-api/)
 - run the command;
 ```sh
+# use_keyless: true,
 curl -v \
   -H "x-tyk-authorization: changeMe" \
   -H "Content-Type: application/json" \
